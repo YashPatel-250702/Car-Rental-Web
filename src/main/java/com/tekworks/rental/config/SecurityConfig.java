@@ -52,7 +52,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(req -> req.requestMatchers("user/login","user/register").permitAll()
+				.authorizeHttpRequests(req -> req.requestMatchers("user/login","user/register","user/sendOtp","/user/verifyOtp").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(filter,UsernamePasswordAuthenticationFilter.class).build();
