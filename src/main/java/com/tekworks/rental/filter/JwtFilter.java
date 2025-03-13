@@ -47,15 +47,11 @@ public class JwtFilter extends OncePerRequestFilter {
             logger.info("JWT Token extracted: {}", token);
             username = jwtService.extractUserName(token);
             role = jwtService.extractRoles(token); // Extract role from token
-            logger.info("Extracted Username: {}", username);
-            logger.info("Extracted Role: {}", role);
-        } else {
-            logger.warn("No JWT Token found in request or it doesn't start with 'Bearer '");
+            logger.info(" Username: {}", username);
+            logger.info(" Role: {}", role);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            logger.info("Security Context is empty, validating token...");
-
             UserDetails details = detailsService.loadUserByUsername(username);
             Collection<? extends GrantedAuthority> authorities = details.getAuthorities();
 
@@ -63,23 +59,17 @@ public class JwtFilter extends OncePerRequestFilter {
             String assignedRoles = authorities.stream()
                                               .map(GrantedAuthority::getAuthority)
                                               .collect(Collectors.joining(", "));
-            logger.info("Loaded UserDetails: {}", details.getUsername());
-            logger.info("User has roles: {}", assignedRoles);
+            logger.info("UserDetails: {}", details.getUsername());
+            logger.info("User roles: {}", assignedRoles);
 
-            if (jwtService.isTokenValid(token, details)) {
-                logger.info("JWT Token is valid. Setting authentication in SecurityContext.");
-                
+            if (jwtService.isTokenValid(token, details)) {            
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         details, null, authorities);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            } else {
-                logger.warn("Invalid JWT Token for user: {}", username);
-            }
-        } else {
-            logger.info("User already authenticated or username is null.");
-        }
+            } 
+        } 
 
         filterChain.doFilter(request, response);
     }
