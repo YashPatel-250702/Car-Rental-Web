@@ -36,22 +36,22 @@ public class LoginController {
 	private UsersRepository repository;
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@Valid @RequestBody Users users) {
+	public ResponseEntity<?> register(@Valid @RequestBody UserDto userDto) {
 	   
 		try {
-			    if (repository.existsByEmail(users.getEmail())) {
+			    if (repository.existsByEmail(userDto.getEmail())) {
 			        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			                .body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Email Already Registered", Instant.now()));
 			    }
 
-			    if (repository.existsByPhoneNo(users.getPhoneNo())) {
+			    if (repository.existsByPhoneNo(userDto.getPhoneNo())) {
 			        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			                .body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Phone Number Already Registered", Instant.now()));
 			    }
 
-			    userLoginService.register(users);
+			    userLoginService.register(userDto);
 			    return ResponseEntity.status(HttpStatus.OK)
-			            .body(new SuccessResponse(HttpStatus.OK, "Registered Successfully", null));
+			            .body( "Registered Successfully");
 		}
 		catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

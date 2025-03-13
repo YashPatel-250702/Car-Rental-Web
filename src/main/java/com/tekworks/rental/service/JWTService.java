@@ -17,9 +17,10 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-	public String generateToken(String userName) {
+	public String generateToken(String userName,String role) {
 
-		Map<String, Object> claims= new HashMap<>();
+		  Map<String, Object> claims = new HashMap<>();
+		    claims.put("roles", role);
 
 		return Jwts.builder()
 				   .claims()
@@ -73,5 +74,9 @@ public class JWTService {
     private Date extractExpiration(String token) {
         return extractClaims(token, Claims::getExpiration);
     }
+    public String extractRoles(String token) {
+        return extractClaims(token, claims -> claims.get("roles", String.class));
+    }
+
 
 }

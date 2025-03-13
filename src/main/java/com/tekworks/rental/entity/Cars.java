@@ -1,12 +1,14 @@
 package com.tekworks.rental.entity;
 
+import java.time.Instant;
 import java.util.List;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,8 +24,24 @@ public class Cars {
 	private Long id;
 	private String carName;
 	private String carModel;
-	private Double perHourCharge;
+	private String carImageUrl;
+	private Double perDayCharge;
 	private List<String> avaibleCities;
-	private Integer carownerId;
+	private String registrationNumber;
+    private String ownerName;
+
+    private Instant createdAt;
+    private Instant updatedAt;
+	
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
 }
