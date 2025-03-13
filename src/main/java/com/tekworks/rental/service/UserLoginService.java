@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tekworks.rental.config.TwilioConfiguration;
 import com.tekworks.rental.dto.LoginDto;
@@ -23,6 +24,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Service
+@Transactional
 public class UserLoginService {
 
 	
@@ -53,7 +55,7 @@ public class UserLoginService {
 	    if (encoder.matches(dto.getPassword(), user.getPassword())) {
 	        LoginResponseDto responseDto = new LoginResponseDto();
 
-	        String token = jwtService.generateToken(user.getEmail());
+	        String token = jwtService.generateToken(user.getEmail(),user.getRole());
 
 	        responseDto.setEmail(dto.getEmail());
 	        responseDto.setName(user.getName());
@@ -69,7 +71,8 @@ public class UserLoginService {
 
 	
 	//method for register the users
-	public void register(Users user) {
+	public void register(UserDto userDto) {
+		Users user = convertToEntity(userDto);
 		String encode = encoder.encode(user.getPassword());
 		user.setPassword(encode);
 		user.setCreatedAt(Instant.now());
@@ -147,6 +150,19 @@ public class UserLoginService {
 		return convertToDTO(user);
 	}
 	
+	
+	private Users convertToEntity(UserDto userDto) {
+		Users user=new Users();
+		user.setEmail(userDto.getEmail());
+		user.setName(userDto.getName());
+		user.setPassword(userDto.getPassword());
+		user.setPhoneNo(userDto.getPhoneNo());
+		user.setLicenseNo(userDto.getLicenseNo());
+		user.setAddress(userDto.getAddress());
+		user.setRole(userDto.getRole());
+		return user;
+	
+	}
 	//method converting Entity to Userdto
 	private UserDto convertToDTO(Users user) {
 		UserDto dto=new UserDto();
@@ -154,6 +170,7 @@ public class UserLoginService {
 		dto.setPhoneNo(user.getPhoneNo());
 		dto.setName(user.getName());
 		dto.setAddress(user.getAddress());
+		dto.setLicenseNo(user.getLicenseNo());
 		return dto;
 	
 	}
