@@ -1,12 +1,14 @@
 package com.tekworks.rental.entity;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,20 +23,34 @@ public class Users {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@NotNull(message = "PhoneNo is reuired")
+
 	private String phoneNo;
-	@NotNull(message = "Name is  required")
+
 	private String name;
-	@NotNull(message = "Email is required")
+
 	private String email;
-	@NotNull(message = "Password Is required")
+
 	private String password;
-	@NotNull(message = "Address is required")
+
 	private String Address;
-	
-	
+
+	private String licenseNo;
+
 	private Instant createdAt;
 	private Instant updatedAt;
-	
+
+	@Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'ROLE_USER'")
+	private String role="ROLE_USER";
+
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = Instant.now();
+		this.updatedAt = Instant.now();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = Instant.now();
+	}
+
 }
