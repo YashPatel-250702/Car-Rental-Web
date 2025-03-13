@@ -1,8 +1,23 @@
-FROM maven:3.8.2-openjdk-17 AS build
+# Stage 1: Build the application
+FROM maven:3.8.7-eclipse-temurin-17 AS build
+
+WORKDIR /app
+
+# Copy the source code
 COPY . .
+
+# Build the JAR file
 RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
 FROM openjdk:17-jdk-slim
-COPY --from=build /target/docker-spring-boot.jar carrental.jar
-# ENV PORT=8080
+WORKDIR /app
+
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/*.jar carrental.jar
+
+# Expose port
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","carrental.jar"]
+
+# Run the application
+CMD ["java", "-jar", "carrental.jar"]
