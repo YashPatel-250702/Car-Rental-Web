@@ -172,7 +172,7 @@ public class UserLoginService {
 		 public OtpData(String otp) {
 		        this.otp = otp;
 		        this.creationTime = Instant.now();
-		        this.expiryTime = creationTime.plusSeconds(600); 
+		        this.expiryTime = creationTime.plusSeconds(120); 
 		    }
 		 
 		 public boolean isExpired() {
