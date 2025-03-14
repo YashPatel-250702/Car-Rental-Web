@@ -49,12 +49,31 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(req -> req.requestMatchers("user/login","user/register","user/sendOtp","/user/verifyOtp").permitAll()
-						.requestMatchers("/car/saveCar").hasRole("ADMIN")
-						.anyRequest().authenticated())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(filter,UsernamePasswordAuthenticationFilter.class).build();
+	    return http
+	        .csrf(AbstractHttpConfigurer::disable)
+	        .authorizeHttpRequests(req -> req
+	            .requestMatchers(
+	                "/user/login",
+	                "/user/register",
+	                "/user/sendOtp",
+	                "/user/verifyOtp",
+	                "/swagger-ui/**",
+	                "/v3/api-docs/**",
+	                "/swagger-ui.html"
+	            ).permitAll()
+	            .requestMatchers("/car/saveCar").hasRole("ADMIN")
+	            .anyRequest().authenticated()
+	        )
+	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+	        .build();
 	}
 
+	
+
 }
+
+
+
+
+

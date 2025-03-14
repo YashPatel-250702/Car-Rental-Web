@@ -158,7 +158,7 @@ public class UserLoginService {
 		user.setPassword(userDto.getPassword());
 		user.setPhoneNo(userDto.getPhoneNo());
 		user.setLicenseNo(userDto.getLicenseNo());
-		user.setAddress(userDto.getAddress());
+		user.setCity(userDto.getCity());
 		user.setRole(userDto.getRole());
 		return user;
 	
@@ -169,7 +169,7 @@ public class UserLoginService {
 		dto.setEmail(user.getEmail());
 		dto.setPhoneNo(user.getPhoneNo());
 		dto.setName(user.getName());
-		dto.setAddress(user.getAddress());
+		dto.setCity(user.getCity());
 		dto.setLicenseNo(user.getLicenseNo());
 		return dto;
 	
