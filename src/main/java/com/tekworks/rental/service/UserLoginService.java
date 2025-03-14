@@ -150,6 +150,12 @@ public class UserLoginService {
 		return convertToDTO(user);
 	}
 	
+	public Users getUserById(Long id) {
+	    return usersRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+	}
+
+	
 	
 	private Users convertToEntity(UserDto userDto) {
 		Users user=new Users();
