@@ -29,6 +29,7 @@ public class Cars {
 	private List<String> avaibleCities;
 	private String registrationNumber;
     private String ownerName;
+    private String ownerMobileNumber;
 
     private Instant createdAt;
     private Instant updatedAt;

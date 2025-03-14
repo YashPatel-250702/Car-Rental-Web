@@ -35,4 +35,7 @@ public class CarDTO {
     @NotBlank(message = "Car Owner name is required")
     private String ownerName;
     
+    @NotBlank(message = "Car Owner Mobile Number is required")
+    private String ownerMobileNumber;
+    
 }

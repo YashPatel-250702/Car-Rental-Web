@@ -3,6 +3,7 @@ package com.tekworks.rental.service;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,6 +58,7 @@ public class UserLoginService {
 
 	        String token = jwtService.generateToken(user.getEmail(),user.getRole());
 
+	        responseDto.setId(user.getId());
 	        responseDto.setEmail(dto.getEmail());
 	        responseDto.setName(user.getName());
 	        responseDto.setJwtToken(token);
@@ -149,6 +151,12 @@ public class UserLoginService {
 		}
 		return convertToDTO(user);
 	}
+	
+	public Users getUserById(Long id) {
+	    return usersRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+	}
+
 	
 	
 	private Users convertToEntity(UserDto userDto) {
