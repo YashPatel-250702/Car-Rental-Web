@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tekworks.rental.dto.CarDTO;
 import com.tekworks.rental.entity.Cars;
+import com.tekworks.rental.entity.Users;
 import com.tekworks.rental.repository.CarRepository;
 
 @Service
@@ -18,23 +19,26 @@ public class CarService {
 
 	@Autowired
 	private CarRepository carRepository;
-	
+
+	@Autowired
+	private UserLoginService userLoginService;
+
 	public void saveCarInfo(CarDTO carDTO) {
-		
-	   Optional<Cars> byRegistrationNumber = carRepository.findByRegistrationNumber(carDTO.getRegistrationNumber());
-		
-	   if(byRegistrationNumber.isPresent()) {
-		   throw new RuntimeException("Car With registration number already presnet");
-	   }
-	   
+
+		Optional<Cars> byRegistrationNumber = carRepository.findByRegistrationNumber(carDTO.getRegistrationNumber());
+
+		if (byRegistrationNumber.isPresent()) {
+			throw new RuntimeException("Car With registration number already presnet");
+		}
+
 		Cars car = convertToEntity(carDTO);
 		carRepository.save(car);
 	}
-	
-	//converting car dto to car entity
+
+	// converting car dto to car entity
 	public Cars convertToEntity(CarDTO carDTO) {
-		
-		Cars car=new Cars();
+
+		Cars car = new Cars();
 		car.setCarName(carDTO.getCarName());
 		car.setCarModel(carDTO.getCarModel());
 		car.setPerDayCharge(carDTO.getPerDayCharge());
@@ -42,33 +46,46 @@ public class CarService {
 		car.setOwnerName(carDTO.getOwnerName());
 		car.setCarImageUrl(carDTO.getCarImageUrl());
 		car.setRegistrationNumber(carDTO.getRegistrationNumber());
-		
+
 		return car;
 	}
-	
-	//getting all cars
-	public List<CarDTO> getAllCars(){
-		 List<Cars> allCars = carRepository.findAll();
-		 if(allCars.isEmpty()) {
-			 return null;
-		 }
-		 
-		 return convertToDto(allCars);
+
+	// getting all cars
+	public List<CarDTO> getAllCars() {
+		List<Cars> allCars = carRepository.findAll();
+		if (allCars.isEmpty()) {
+			return null;
+		}
+
+		return convertToDto(allCars);
 	}
-	
-public List<CarDTO> convertToDto(List<Cars> cars) {
-		
-		return cars.stream().map(car->{
-			CarDTO carDTO=new CarDTO();
+
+	public List<CarDTO> convertToDto(List<Cars> cars) {
+
+		return cars.stream().map(car -> {
+			CarDTO carDTO = new CarDTO();
 			carDTO.setRegistrationNumber(car.getRegistrationNumber());
 			carDTO.setAvailableCities(car.getAvaibleCities());
 			carDTO.setCarName(car.getCarName());
 			carDTO.setPerDayCharge(car.getPerDayCharge());
 			carDTO.setCarModel(car.getCarModel());
+			carDTO.setOwnerMobileNumber(car.getOwnerMobileNumber());
 			carDTO.setCarImageUrl(car.getCarImageUrl());
-			carDTO.setOwnerName(car.getOwnerName());	
+			carDTO.setOwnerName(car.getOwnerName());
 			return carDTO;
 		}).collect(Collectors.toList());
 	}
-	
+
+	public List<CarDTO> getCarsByUserCity(Long userId) {
+		Users user = userLoginService.getUserById(userId);
+
+		String city = user.getCity();
+		List<Cars> byCity = carRepository.findByCity(city);
+		if (byCity.isEmpty()) {
+			return null;
+		}
+		return convertToDto(byCity);
+
+	}
+
 }
