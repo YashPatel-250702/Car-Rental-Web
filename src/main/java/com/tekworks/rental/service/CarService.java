@@ -12,6 +12,7 @@ import com.tekworks.rental.dto.CarDTO;
 import com.tekworks.rental.entity.Cars;
 import com.tekworks.rental.entity.Users;
 import com.tekworks.rental.repository.CarRepository;
+import com.tekworks.rental.repository.UsersRepository;
 
 @Service
 @Transactional
@@ -21,10 +22,13 @@ public class CarService {
 	private CarRepository carRepository;
 
 	@Autowired
+
+	private UsersRepository usersRepository;
+    
+	@Autowired
 	private UserLoginService userLoginService;
-
+  
 	public void saveCarInfo(CarDTO carDTO) {
-
 		Optional<Cars> byRegistrationNumber = carRepository.findByRegistrationNumber(carDTO.getRegistrationNumber());
 
 		if (byRegistrationNumber.isPresent()) {
@@ -89,3 +93,5 @@ public class CarService {
 	}
 
 }
+}
+

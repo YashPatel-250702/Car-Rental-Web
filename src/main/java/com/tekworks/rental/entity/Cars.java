@@ -29,7 +29,7 @@ public class Cars {
 	private String registrationNumber;
     private String ownerName;
     private String ownerMobileNumber;
- 
+
     private Instant createdAt;
     private Instant updatedAt;
     @PrePersist
