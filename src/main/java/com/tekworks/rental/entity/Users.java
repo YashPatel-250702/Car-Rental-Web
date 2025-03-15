@@ -32,7 +32,7 @@ public class Users {
 
 	private String password;
 
-	private String City;
+	private String city;
 
 	private String licenseNo;
 

@@ -20,7 +20,7 @@ public class UserDto {
 	@NotBlank(message = "Password Is required")
 	private String password;
 	@NotBlank(message = "City is required")
-	private String City;
+	private String city;
 	
 	@NotBlank(message = "LicenseNo is Required")
 	private String licenseNo;
