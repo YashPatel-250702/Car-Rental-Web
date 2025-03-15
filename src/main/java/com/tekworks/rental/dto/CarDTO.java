@@ -1,16 +1,14 @@
 package com.tekworks.rental.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.Instant;
+ 
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+ 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,5 +35,6 @@ public class CarDTO {
     
     @NotBlank(message = "Car Owner Mobile Number is required")
     private String ownerMobileNumber;
-    
 }
+}
+

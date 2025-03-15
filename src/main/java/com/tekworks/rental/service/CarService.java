@@ -22,13 +22,13 @@ public class CarService {
 	private CarRepository carRepository;
 
 	@Autowired
+
 	private UsersRepository usersRepository;
     
 	@Autowired
 	private UserLoginService userLoginService;
-
+  
 	public void saveCarInfo(CarDTO carDTO) {
-
 		Optional<Cars> byRegistrationNumber = carRepository.findByRegistrationNumber(carDTO.getRegistrationNumber());
 
 		if (byRegistrationNumber.isPresent()) {
@@ -93,3 +93,5 @@ public class CarService {
 	}
 
 }
+}
+
