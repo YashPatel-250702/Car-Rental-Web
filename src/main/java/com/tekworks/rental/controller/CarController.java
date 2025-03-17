@@ -58,10 +58,13 @@ public class CarController {
 		}
 	}
 
-	@GetMapping("getCars/{userId}")
+	@GetMapping("getCarsByUserCity/{userId}")
 	public ResponseEntity<?> getCarsByUserCity(@PathVariable Long userId) {
 		try {
 			List<CarDTO> cars = carService.getCarsByUserCity(userId);
+			if(cars.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			}
 			return ResponseEntity.ok(cars);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
