@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tekworks.rental.dto.CarDTO;
+import com.tekworks.rental.entity.Cars;
 import com.tekworks.rental.response.ErrorResponse;
 import com.tekworks.rental.response.SuccessResponse;
 import com.tekworks.rental.service.CarService;
@@ -67,5 +68,15 @@ public class CarController {
 					.body("An error occurred while fetching cars: " + e.getMessage());
 		}
 	}
+     
+	@GetMapping("getCar/{carId}")
+	public ResponseEntity<?> getCarById(@PathVariable Long carId) {
+        try {
+            Cars car = carService.getCarById(carId);
+            return car != null ? ResponseEntity.ok(car) : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
  
 }

@@ -88,4 +88,9 @@ public class CarService {
 
 	}
 
+    public Cars getCarById(Long carId) {
+        return carRepository.findById(carId).orElse(null);
+    }
+
+
 }
