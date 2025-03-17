@@ -27,7 +27,7 @@ public class CarController {
  
 	@Autowired
 	private CarService carService;
- 
+
 	@PostMapping("/saveCar")
 	public ResponseEntity<?> saveCar(@Valid @RequestBody CarDTO carDTO) {
 		try {
@@ -41,7 +41,7 @@ public class CarController {
 					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
 		}
 	}
- 
+
 	@GetMapping("/getAllCars")
 	public ResponseEntity<?> getAllCars() {
 		try {
@@ -51,13 +51,13 @@ public class CarController {
 			}
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new SuccessResponse(HttpStatus.OK, "All Available Cars", allCars));
- 
+
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
 		}
 	}
- 
+
 	@GetMapping("getCars/{userId}")
 	public ResponseEntity<?> getCarsByUserCity(@PathVariable Long userId) {
 		try {
@@ -68,6 +68,7 @@ public class CarController {
 					.body("An error occurred while fetching cars: " + e.getMessage());
 		}
 	}
+
      
 	@GetMapping("getCar/{carId}")
 	public ResponseEntity<?> getCarById(@PathVariable Long carId) {
@@ -79,4 +80,7 @@ public class CarController {
         }
     }
  
+}
+
+}
 }
