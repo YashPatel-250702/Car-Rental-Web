@@ -15,8 +15,5 @@ public interface CarRepository extends JpaRepository<Cars, Long> {
 
 	@Query(value = "SELECT * FROM cars WHERE :city = ANY(avaible_cities)", nativeQuery = true)
 	List<Cars> findByCity(@Param("city") String city);
-	 Optional<Cars> findByRegistrationNumber(String registrationNumber);
 	 
-	 @Query(value = "SELECT * FROM cars WHERE :city = ANY(avaible_cities)", nativeQuery = true)
-	    List<Cars> findByCity(@Param("city") String city);
 }
