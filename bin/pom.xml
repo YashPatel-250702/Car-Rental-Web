@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.2.4</version>  <!-- Latest stable version -->
+    <relativePath />
+</parent>
 	<groupId>com.tekworks.rental</groupId>
 	<artifactId>carrental</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -39,6 +39,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.4.0</version>  <!-- Use latest version -->
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -105,7 +111,7 @@
 			<artifactId>twilio</artifactId>
 			<version>10.6.10</version>
 		</dependency>
-		
+
 		<!--Springboot AOP-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
