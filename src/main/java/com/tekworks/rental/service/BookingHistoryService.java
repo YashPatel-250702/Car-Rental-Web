@@ -1,5 +1,10 @@
 package com.tekworks.rental.service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,43 +19,72 @@ import com.tekworks.rental.repository.UsersRepository;
 @Service
 public class BookingHistoryService {
 
-	
 	@Autowired
 	private BookingHistoryRepository bookingHistoryRepository;
-	
+
 	@Autowired
 	private UsersRepository usersRepository;
-	
+
 	@Autowired
 	private CarRepository carRepository;
-	
+
 	public void bookCar(BookingHistoryDto bookingHistoryDto) {
 		Users user = usersRepository.findById(bookingHistoryDto.getUserId())
-		        .orElseThrow(() -> new RuntimeException("User Not found with id: " + bookingHistoryDto.getUserId()));
+				.orElseThrow(() -> new RuntimeException("User Not found with id: " + bookingHistoryDto.getUserId()));
 
-		
 		Cars car = carRepository.findById(bookingHistoryDto.getCarId())
-		        .orElseThrow(()->new RuntimeException("Car not found with id: "+bookingHistoryDto.getCarId()));
-		
+				.orElseThrow(() -> new RuntimeException("Car not found with id: " + bookingHistoryDto.getCarId()));
+
 		BookingHistory bookingHistory = convertToEntity(bookingHistoryDto);
 		bookingHistory.setUser(user);
 		bookingHistory.setCar(car);
-		
+
+		bookingHistory.setBookingDate(LocalDateTime.now());
 		bookingHistoryRepository.save(bookingHistory);
 	}
-	
+
+	public List<BookingHistoryDto> getUpcomingBooking(Long userId) {
+		if (!usersRepository.existsById(userId)) {
+			throw new RuntimeException("User not found with id:  " + userId);
+		}
+
+LocalDateTime now = LocalDateTime.now();
+List<BookingHistory> bookings = bookingHistoryRepository.findByUserIdAndPickupDateAfterAndJourneyStatus(userId, now, "upcoming");
+		
+		System.out.println("Bookings are: "+bookings);
+		return bookings.stream().map(this::convertToDto).collect(Collectors.toList());
+	}
+
+	// converting dto to entity
 	public BookingHistory convertToEntity(BookingHistoryDto bookingHistoryDto) {
-	    BookingHistory bookingHistory = new BookingHistory();
-	    
-	    bookingHistory.setBookingCity(bookingHistoryDto.getBookingCity());
-	    bookingHistory.setPickupLocation(bookingHistoryDto.getPickupLocation());
-	    bookingHistory.setDropoffLocation(bookingHistoryDto.getDropoffLocation());
-	    bookingHistory.setBookingDate(bookingHistoryDto.getBookingDate());
-	    bookingHistory.setPickupDate(bookingHistoryDto.getPickupDate());
-	    bookingHistory.setDropoffDate(bookingHistoryDto.getDropoffDate());
-	    bookingHistory.setTotalCost(bookingHistoryDto.getTotalCost());
-	    bookingHistory.setStatus(bookingHistoryDto.getStatus());
-	    return bookingHistory;
+		BookingHistory bookingHistory = new BookingHistory();
+
+		bookingHistory.setBookingCity(bookingHistoryDto.getBookingCity());
+		bookingHistory.setPickupLocation(bookingHistoryDto.getPickupLocation());
+
+		bookingHistory.setBookingDate(bookingHistoryDto.getBookingDate());
+		bookingHistory.setPickupDate(bookingHistoryDto.getPickupDate());
+		bookingHistory.setDropoffDate(bookingHistoryDto.getDropoffDate());
+		bookingHistory.setTotalCost(bookingHistoryDto.getTotalCost());
+		bookingHistory.setJourneyStatus(bookingHistoryDto.getJourneyStatus());
+		return bookingHistory;
+	}
+
+	// converting booking entity to dto
+	private BookingHistoryDto convertToDto(BookingHistory booking) {
+		BookingHistoryDto dto = new BookingHistoryDto();
+		dto.setId(booking.getId());
+		dto.setBookingCity(booking.getBookingCity());
+		dto.setPickupLocation(booking.getPickupLocation());
+		
+		dto.setBookingDate(booking.getBookingDate());
+		dto.setPickupDate(booking.getPickupDate());
+		dto.setDropoffDate(booking.getDropoffDate());
+		dto.setTotalCost(booking.getTotalCost());
+		dto.setJourneyStatus(booking.getJourneyStatus());
+		dto.setUserId(booking.getUser().getId());
+		dto.setCarId(booking.getCar().getId());
+		return dto;
 	}
 
 }

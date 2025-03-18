@@ -1,10 +1,12 @@
 package com.tekworks.rental.controller;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,5 +47,22 @@ public class BookingHistoryController {
 					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
 		}
 
+	}
+
+	@GetMapping("/getUpcomingBookings/{userId}")
+	public ResponseEntity<?> getUpcomingBookings(@PathVariable Long userId) {
+
+		try {
+
+			List<BookingHistoryDto> upcomingBooking = bookingHistoryService.getUpcomingBooking(userId);
+			return ResponseEntity.ok(upcomingBooking);
+
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), Instant.now()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
+		}
 	}
 }

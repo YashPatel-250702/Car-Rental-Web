@@ -23,10 +23,6 @@ public class BookingHistoryDto {
     @NotBlank(message = "Pickup location cannot be empty")
     private String pickupLocation;
 
-    @NotBlank(message = "Dropoff location cannot be empty")
-    private String dropoffLocation;
-
-    @NotNull(message = "Booking date cannot be null")
     private LocalDateTime bookingDate;
 
     @NotNull(message = "Pickup date cannot be null")
@@ -42,7 +38,7 @@ public class BookingHistoryDto {
     private Double totalCost;
 
     @NotBlank(message = "Status cannot be empty")
-    private String status;
+    private String journeyStatus;
 
     private Long userId;
     private Long carId;

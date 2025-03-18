@@ -24,12 +24,11 @@ public class BookingHistory {
 
     private String bookingCity;
     private String pickupLocation;
-    private String dropoffLocation;
     private LocalDateTime bookingDate;
     private LocalDateTime pickupDate;
     private LocalDateTime dropoffDate;
     private Double totalCost;
-    private String status;
+    private String journeyStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
