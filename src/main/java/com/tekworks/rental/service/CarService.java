@@ -68,6 +68,7 @@ public class CarService {
 
 		return cars.stream().map(car -> {
 			CarDTO carDTO = new CarDTO();
+			carDTO.setId(car.getId());
 			carDTO.setRegistrationNumber(car.getRegistrationNumber());
 			carDTO.setAvailableCities(car.getAvaibleCities());
 			carDTO.setCarName(car.getCarName());
