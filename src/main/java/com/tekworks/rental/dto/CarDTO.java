@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CarDTO {
 	
+	private Long id;
+	
     @NotBlank(message = "Car Name is required")
     private String carName;
     @NotBlank(message = "Car Model is required")
