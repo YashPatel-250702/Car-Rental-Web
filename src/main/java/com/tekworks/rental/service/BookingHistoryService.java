@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tekworks.rental.dto.BookingHistoryDto;
+import com.tekworks.rental.dto.BookingStatusUpdate;
 import com.tekworks.rental.entity.BookingHistory;
 import com.tekworks.rental.entity.Cars;
 import com.tekworks.rental.entity.Users;
@@ -91,6 +92,28 @@ public class BookingHistoryService {
 		System.out.println("Cancled Bookings are: " + bookings);
 		return bookings.stream().map(this::convertToDto).collect(Collectors.toList());
 	}
+	
+	public BookingHistory updateBookingStatus(BookingStatusUpdate bookingStatusUpdate,Long userId) {
+		
+		if(!usersRepository.existsById(userId)) {
+			throw new RuntimeException("User not found with id:  " + userId);
+		}
+		if(!carRepository.existsById(bookingStatusUpdate.getCarId())) {
+			throw new RuntimeException("Car not found with id:  " + bookingStatusUpdate.getCarId());
+		}
+	
+		BookingHistory booking = bookingHistoryRepository.findByUserIdAndCarIdAndJourneyStatus(userId, bookingStatusUpdate.getCarId(),"upcoming");
+		
+		if(booking==null) {
+			throw new RuntimeException("Booking  not found with user id:  " + userId+" and car id: "+bookingStatusUpdate.getCarId());
+		}
+		
+		booking.setJourneyStatus(bookingStatusUpdate.getNewStatus());
+		return bookingHistoryRepository.save(booking);
+	}
+	
+	
+	
 	// converting dto to entity
 	public BookingHistory convertToEntity(BookingHistoryDto bookingHistoryDto) {
 		BookingHistory bookingHistory = new BookingHistory();

@@ -15,4 +15,9 @@ public interface BookingHistoryRepository extends JpaRepository<BookingHistory, 
 	
 	
 	List<BookingHistory> findByUserIdAndJourneyStatus(Long userId,String journeyStatus );
+	
+	
+	BookingHistory findByUserIdAndCarIdAndJourneyStatus(Long userId, Long carId, String journeyStatus);
+
+
 }
