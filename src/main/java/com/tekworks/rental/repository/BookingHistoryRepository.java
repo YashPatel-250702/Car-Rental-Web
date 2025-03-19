@@ -12,4 +12,12 @@ public interface BookingHistoryRepository extends JpaRepository<BookingHistory, 
 	@Query("SELECT b FROM BookingHistory b WHERE b.user.id = :userId AND b.pickupDate > :currentDateTime AND LOWER(b.journeyStatus) = LOWER(:journeyStatus)")
 	List<BookingHistory> findByUserIdAndPickupDateAfterAndJourneyStatus(Long userId, LocalDateTime currentDateTime,
 			String journeyStatus);
+	
+	
+	List<BookingHistory> findByUserIdAndJourneyStatus(Long userId,String journeyStatus );
+	
+	
+	BookingHistory findByUserIdAndCarIdAndJourneyStatus(Long userId, Long carId, String journeyStatus);
+
+
 }

@@ -86,11 +86,9 @@ public class CarService {
 
 		String city = user.getCity();
 		List<Cars> byCity = carRepository.findByCity(city);
-		if (byCity.isEmpty()) {
-			return null;
-		}
-		return convertToDto(byCity);
-
+			
+		return byCity.isEmpty()?null:convertToDto(byCity);
+		
 	}
 
 
