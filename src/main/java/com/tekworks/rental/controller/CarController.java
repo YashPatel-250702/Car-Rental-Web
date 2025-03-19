@@ -62,7 +62,7 @@ public class CarController {
 	public ResponseEntity<?> getCarsByUserCity(@PathVariable Long userId) {
 		try {
 			List<CarDTO> cars = carService.getCarsByUserCity(userId);
-			if(cars.isEmpty()) {
+			if(cars==null) {
 				return ResponseEntity.noContent().build();
 			}
 			return ResponseEntity.ok(cars);

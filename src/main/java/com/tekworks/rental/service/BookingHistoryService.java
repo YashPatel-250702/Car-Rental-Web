@@ -48,13 +48,49 @@ public class BookingHistoryService {
 			throw new RuntimeException("User not found with id:  " + userId);
 		}
 
-LocalDateTime now = LocalDateTime.now();
-List<BookingHistory> bookings = bookingHistoryRepository.findByUserIdAndPickupDateAfterAndJourneyStatus(userId, now, "upcoming");
-		
-		System.out.println("Bookings are: "+bookings);
+		LocalDateTime now = LocalDateTime.now();
+		List<BookingHistory> bookings = bookingHistoryRepository.findByUserIdAndPickupDateAfterAndJourneyStatus(userId,
+				now, "upcoming");
+
+		if(bookings.isEmpty()) {
+			throw new RuntimeException("No Umcoming bookings found");
+		}
+		System.out.println("Upcoming Bookings are: " + bookings);
+		return bookings.stream().map(this::convertToDto).collect(Collectors.toList());
+	}
+	
+	public List<BookingHistoryDto> getCompleteBooking(Long userId) {
+		if (!usersRepository.existsById(userId)) {
+			throw new RuntimeException("User not found with id:  " + userId);
+		}
+
+		List<BookingHistory> bookings = bookingHistoryRepository.findByUserIdAndJourneyStatus(userId,
+				"completed");
+
+		if(bookings.isEmpty()) {
+			throw new RuntimeException("No Completed bookings found");
+		}
+
+		System.out.println("Completed Bookings are: " + bookings);
 		return bookings.stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 
+	
+	public List<BookingHistoryDto> getCancleBooking(Long userId) {
+		if (!usersRepository.existsById(userId)) {
+			throw new RuntimeException("User not found with id:  " + userId);
+		}
+
+		List<BookingHistory> bookings = bookingHistoryRepository.findByUserIdAndJourneyStatus(userId,
+				"cancled");
+
+		
+		if(bookings.isEmpty()) {
+			throw new RuntimeException("No cancle bookings found");
+		}
+		System.out.println("Cancled Bookings are: " + bookings);
+		return bookings.stream().map(this::convertToDto).collect(Collectors.toList());
+	}
 	// converting dto to entity
 	public BookingHistory convertToEntity(BookingHistoryDto bookingHistoryDto) {
 		BookingHistory bookingHistory = new BookingHistory();
@@ -76,7 +112,7 @@ List<BookingHistory> bookings = bookingHistoryRepository.findByUserIdAndPickupDa
 		dto.setId(booking.getId());
 		dto.setBookingCity(booking.getBookingCity());
 		dto.setPickupLocation(booking.getPickupLocation());
-		
+
 		dto.setBookingDate(booking.getBookingDate());
 		dto.setPickupDate(booking.getPickupDate());
 		dto.setDropoffDate(booking.getDropoffDate());

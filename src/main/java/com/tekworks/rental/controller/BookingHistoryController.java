@@ -65,4 +65,38 @@ public class BookingHistoryController {
 					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
 		}
 	}
+	
+	@GetMapping("/getCompleteBookings/{userId}")
+	public ResponseEntity<?> getCompleteBookings(@PathVariable Long userId) {
+
+		try {
+
+			List<BookingHistoryDto> upcomingBooking = bookingHistoryService.getCompleteBooking(userId);
+			return ResponseEntity.ok(upcomingBooking);
+
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), Instant.now()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
+		}
+	}
+	
+	@GetMapping("/getCancledBookings/{userId}")
+	public ResponseEntity<?> getCancledBookings(@PathVariable Long userId) {
+
+		try {
+
+			List<BookingHistoryDto> upcomingBooking = bookingHistoryService.getCancleBooking(userId);
+			return ResponseEntity.ok(upcomingBooking);
+
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), Instant.now()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
+		}
+	}
 }
