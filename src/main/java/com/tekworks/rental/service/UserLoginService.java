@@ -3,9 +3,15 @@ package com.tekworks.rental.service;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,48 +34,57 @@ import lombok.NoArgsConstructor;
 @Transactional
 public class UserLoginService {
 
+	    @Autowired
+	    private TwilioConfiguration twilioConfiguration;
 	
-	@Autowired 
-	private UsersRepository usersRepository;
+	    @Autowired
+	    private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JWTService jwtService;
-	
-	@Autowired
-	private PasswordEncoder encoder;
-	
-	@Autowired
-	private TwilioConfiguration twilioConfiguration;
+	    @Autowired
+	    private JWTService jwtService;
+
+	    @Autowired
+	    private UsersRepository usersRepository;
+
+	    @Autowired
+	    private PasswordEncoder encoder;
 	
 	 private Map<String, OtpData> otpMap = new HashMap<>();
 	
 	 //method for login the users
-	public LoginResponseDto login(LoginDto dto) throws Exception {
-	    Users user = usersRepository.findByEmail(dto.getEmail());
+	 public LoginResponseDto login(LoginDto dto) throws Exception {
+		    try {
+		        Authentication authentication = authenticationManager.authenticate(
+		            new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
+		        );
 
-	    if (user == null) {
-	        System.out.println("User not found");
-	        return null;
-	    }
+		        SecurityContextHolder.getContext().setAuthentication(authentication);
 
+		    
+		        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-	    if (encoder.matches(dto.getPassword(), user.getPassword())) {
-	        LoginResponseDto responseDto = new LoginResponseDto();
+		        String token = jwtService.generateToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
+		        
+		        Users user=usersRepository.findByEmail(userDetails.getUsername());
+		        
+		        LoginResponseDto responseDto = new LoginResponseDto();
+		        responseDto.setId(user.getId());
+		        responseDto.setEmail(userDetails.getUsername());
+		        responseDto.setName(userDetails.getUsername());
+		        responseDto.setJwtToken(token);
+		        responseDto.setLoginTIme(Instant.now());
+		        responseDto.setPhoneNo("");
 
-	        String token = jwtService.generateToken(user.getEmail(),user.getRole());
+		        return responseDto;
 
-	        responseDto.setId(user.getId());
-	        responseDto.setEmail(dto.getEmail());
-	        responseDto.setName(user.getName());
-	        responseDto.setJwtToken(token);
-	        responseDto.setLoginTIme(Instant.now());
-	        responseDto.setPhoneNo(user.getPhoneNo());
-
-	        return responseDto;
-	    }
-
-	    throw new RuntimeException("Invalid Password Please check");
-	}
+		    } catch (UsernameNotFoundException ex) {
+		        throw new RuntimeException("User not found with email: " + dto.getEmail(), ex);
+		    } catch (BadCredentialsException ex) {
+		        throw new RuntimeException("Invalid password for email: " + dto.getEmail(), ex);
+		    } catch (Exception ex) {
+		        throw new RuntimeException("An error occurred during login", ex);
+		    }
+		}
 
 	
 	//method for register the users
