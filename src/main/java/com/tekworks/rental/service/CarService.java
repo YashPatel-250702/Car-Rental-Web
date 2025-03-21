@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tekworks.rental.dto.CarDTO;
+import com.tekworks.rental.dto.UserDto;
 import com.tekworks.rental.entity.Cars;
 import com.tekworks.rental.entity.Users;
 import com.tekworks.rental.repository.CarRepository;
@@ -28,6 +29,7 @@ public class CarService {
 	@Autowired
 	private UserLoginService userLoginService;
   
+	@Transactional(rollbackForClassName  = "java.lang.Exception")
 	public void saveCarInfo(CarDTO carDTO) {
 		Optional<Cars> byRegistrationNumber = carRepository.findByRegistrationNumber(carDTO.getRegistrationNumber());
 
@@ -82,7 +84,7 @@ public class CarService {
 	}
 
 	public List<CarDTO> getCarsByUserCity(Long userId) {
-		Users user = userLoginService.getUserById(userId);
+		UserDto user = userLoginService.getUserById(userId);
 
 		String city = user.getCity();
 		List<Cars> byCity = carRepository.findByCity(city);

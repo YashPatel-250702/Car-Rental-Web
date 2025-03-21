@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tekworks.rental.dto.BookingHistoryDto;
 import com.tekworks.rental.dto.BookingStatusUpdate;
@@ -29,6 +30,7 @@ public class BookingHistoryService {
 	@Autowired
 	private CarRepository carRepository;
 
+	@Transactional(rollbackForClassName  = "java.lang.Exception")
 	public void bookCar(BookingHistoryDto bookingHistoryDto) {
 		Users user = usersRepository.findById(bookingHistoryDto.getUserId())
 				.orElseThrow(() -> new RuntimeException("User Not found with id: " + bookingHistoryDto.getUserId()));
@@ -93,6 +95,7 @@ public class BookingHistoryService {
 		return bookings.stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 	
+	@Transactional(rollbackForClassName  = "java.lang.Exception")
 	public BookingHistory updateBookingStatus(BookingStatusUpdate bookingStatusUpdate,Long userId) {
 		
 		if(!usersRepository.existsById(userId)) {
