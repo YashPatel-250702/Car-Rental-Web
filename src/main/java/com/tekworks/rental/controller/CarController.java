@@ -66,6 +66,9 @@ public class CarController {
 				return ResponseEntity.noContent().build();
 			}
 			return ResponseEntity.ok(cars);
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(), Instant.now()));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("An error occurred while fetching cars: " + e.getMessage());
