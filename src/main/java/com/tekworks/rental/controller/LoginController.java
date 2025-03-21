@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +17,8 @@ import com.tekworks.rental.dto.LoginDto;
 import com.tekworks.rental.dto.LoginResponseDto;
 import com.tekworks.rental.dto.SendOtpDto;
 import com.tekworks.rental.dto.UserDto;
+import com.tekworks.rental.dto.UserProfilUpdateDto;
 import com.tekworks.rental.dto.VerifyOtpDto;
-import com.tekworks.rental.entity.Users;
 import com.tekworks.rental.repository.UsersRepository;
 import com.tekworks.rental.response.ErrorResponse;
 import com.tekworks.rental.response.SuccessResponse;
@@ -113,8 +114,8 @@ public class LoginController {
 	}
 
 	
-	@GetMapping("/viewProfile/{email}")
-	public ResponseEntity<?> getUserDetails(@PathVariable String email){
+	@GetMapping("/viewProfileByEmail/{email}")
+	public ResponseEntity<?> getUserDetailByEmail(@PathVariable String email){
 		try {
 			
 			UserDto user = userLoginService.getUserByEmail(email);
@@ -129,6 +130,43 @@ public class LoginController {
 					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
 		}
 	
+	}
+	
+
+	@GetMapping("/viewProfileById/{id}")
+	public ResponseEntity<?> getUserDetailsById(@PathVariable Long id){
+		try {
+			
+			UserDto user = userLoginService.getUserById(id);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new SuccessResponse(HttpStatus.OK, "User Detail", user));
+		}catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), Instant.now()));
+		}
+		catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
+		}
+	
+	}
+	
+	@PutMapping("/updateProfile/{id}")
+	public ResponseEntity<?> updateProfileById(@Valid @RequestBody  UserProfilUpdateDto userDto ,@PathVariable Long id){
+		
+		try {
+		    userLoginService.updateProfile(userDto,id);
+		    return ResponseEntity.status(HttpStatus.OK)
+		            .body( "Profile updated Successfully");
+		    
+	}catch (RuntimeException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage(), Instant.now()));
+	}
+	catch (Exception e) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", Instant.now()));
+	}
 	}
 
 }
